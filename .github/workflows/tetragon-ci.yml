@@ -1,0 +1,37 @@
+name: Tetragon CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.x"
+
+      - name: Install Tetragon
+        uses: lizrice/tetragon-ci/.github/actions/tetragon-setup@v0.1.0
+        with:
+          tetragon_version: v1.7.0
+          enforce_policies: "true"
+
+      - name: Build containers-from-scratch
+        run: go build -o containers-from-scratch ./main.go
+
+      - name: Run project check
+        run: bash ./ci/check.sh
+
+      - name: Report Tetragon activity
+        if: ${{ always() }}
+        uses: lizrice/tetragon-ci/.github/actions/tetragon-report@v0.1.0
