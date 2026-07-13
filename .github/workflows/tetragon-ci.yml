@@ -16,12 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.23.x"
+          cache: false
 
       - name: Install Tetragon
-        uses: lizrice/tetragon-ci/.github/actions/tetragon-setup@v0.1.0
+        uses: lizrice/tetragon-ci/.github/actions/tetragon-setup@v0.1.1
         with:
           tetragon_version: v1.7.0
           enforce_policies: "true"
@@ -34,4 +35,4 @@ jobs:
 
       - name: Report Tetragon activity
         if: ${{ always() }}
-        uses: lizrice/tetragon-ci/.github/actions/tetragon-report@v0.1.0
+        uses: lizrice/tetragon-ci/.github/actions/tetragon-report@v0.1.1
